@@ -49,4 +49,14 @@ public class Utilities {
 		if (Storage.toLowerCase().equals("no")) return 0;
 		return extractSSD(Storage);
 	}
+	
+
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    Pattern pattern = Pattern.compile("[0-9]*");
+	    Matcher matcher = pattern.matcher(strNum);
+	    return matcher.matches();
+	}
 }

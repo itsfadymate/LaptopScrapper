@@ -1,17 +1,19 @@
 package main;
 //TODO: Setter methods need to reject new sets if not valid form
 public class LaptopData {
-	String purchaseLink;
-	String gpu;
-	String cpu;
-	int hdd;
-	int ssd;
-	int ram;
-	double price;
-	Currency c;
-	boolean inStock;
-	boolean inSale;
-	String description="";
+	private String name;
+	
+	private String purchaseLink;
+	private String gpu;
+	private String cpu;
+	private int hdd;
+	private int ssd;
+	private int ram;
+	private double price;
+	private Currency c;
+	private boolean inStock;
+	private boolean inSale;
+	private String description="";
 	public String toString() {
 		return "purchase link: " + purchaseLink +
 				"\ngpu: " +gpu +
@@ -23,8 +25,16 @@ public class LaptopData {
 				"\ncurrency: " +c +
 				"\ninStock: " + inStock+
 				"\ninSale: " +inSale +
-				"\ndescription: " + description;
+				"\nname: " + name + 
+				"\ndescription: " + description+
+				"\n" + Utilities.debugginString;
 	}	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public LaptopData(Currency c) {
 		this.c = c;
 		this.inStock = true;

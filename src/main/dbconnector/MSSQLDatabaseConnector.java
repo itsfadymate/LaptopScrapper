@@ -6,18 +6,18 @@ import java.sql.Statement;
 
 public class MSSQLDatabaseConnector {
     public static void main(String[] args) {
-        // Connection details
-        String connectionUrl = "jdbc:sqlserver://<hostname>:<port>;databaseName=<database>;user=<username>;password=<password>";
+        
+        String connectionUrl = "jdbc:sqlserver://(localdb)\\MSSQLLocalDB;databaseName=laptop_registry;integratedSecurity=true";
 
-        // Connect to the database
+        
         try (Connection conn = DriverManager.getConnection(connectionUrl);
              Statement stmt = conn.createStatement()) {
 
-            // Test Query
-            String sql = "SELECT TOP 1 * FROM your_table";
+            
+            String sql = "SELECT  * FROM laptop";
             ResultSet rs = stmt.executeQuery(sql);
 
-            // Process the results
+            
             while (rs.next()) {
                 System.out.println("Data: " + rs.getString(1)); // Adjust based on your columns
             }
