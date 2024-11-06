@@ -70,7 +70,8 @@ public class NeweggProductReader {
 		Elements tables = doc.select("table.table-horizontal").select("tr");
 		Elements name = doc.select("h1.product-title");
 		//System.out.println(name);
-		laptop.setName(name.text());
+		laptop.setName(Utilities.extractName(name.text()));
+		
 		
 		Elements priceStrong = doc.select("div.price-current").select("Strong");
 		//System.out.println("priceStrong: " + priceStrong.first());
