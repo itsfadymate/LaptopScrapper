@@ -9,8 +9,8 @@ import java.util.*;
 public class Utilities {
 	public static final String debugginString = "-------------------------------------";
 	private static String namePattern = "(?i)^.*(gaming\\s*)?laptop";
-	private static String gpuPattern = "((rtx\\s*\\d0\\d0)\\s*(ti)? | (gtx\\s*\\d{3}0\\s*(ti)?) )";
-	private static String cpuPattern = "(core\\s*i\\d\\s*\\-?\\s*?\\d{5}\\s*[hfux]?)| (Ryzen\\s*\\d\\s*\\d{4}(HS)?)";
+	private static String gpuPattern = "(?i)(((rtx(\\s)*(\\d)0\\d0)(\\s)*(ti)?)|(gtx(\\s)*(\\d){3}0(\\s)*(ti)?))";
+	private static String cpuPattern = "(?i)(\\s*i[3579]\\s*\\-?\\s*?\\d{5}\\s*[hfux]?)|(Ryzen\\s*\\d\\s*\\d{4}(HS)?)";
 	private static String ramPattern = "(4|8|12|16|24|32)\\s*gb";
 	private static String storagePattern = "(128|256|512|1|2)\\s*[tg]b";
 	public static String extractName(String title) {
@@ -33,13 +33,16 @@ public class Utilities {
 		}
 		return matcher.group();
 	}
-	public static String extractcpu(String cpu)throws ExctractionFailedException {
+	public static String extractCpu(String cpu)throws ExctractionFailedException {
 		Pattern p = Pattern.compile(cpuPattern,Pattern.CASE_INSENSITIVE);
 		Matcher matcher  = p.matcher(cpu);
 		if (!matcher.find()) {
 			throw new ExctractionFailedException();
 		}
 		return matcher.group();
+	}
+	public static double extractPrice(String p) throws ExctractionFailedException {
+		return Double.parseDouble(p);
 	}
 	public static int extractRam(String Memory)throws ExctractionFailedException {
 		Pattern p = Pattern.compile(ramPattern,Pattern.CASE_INSENSITIVE);
@@ -76,9 +79,7 @@ public class Utilities {
 	public static Map<String,String> extractCookies(String cookieheaders) {
 		String[] cookiePairs = cookieheaders.split(";");
 
-     
         Map<String, String> cookies = new HashMap<>();
-
         
         for (String cookie : cookiePairs) {
             String[] parts = cookie.trim().split("=", 2);
@@ -89,11 +90,7 @@ public class Utilities {
             }
         }
 
-        
-   
-		return cookies;
-		
-		
+		return cookies;	
 	}
 	public static void main(String[] args) {
 		Map<String,String> cookies = extractCookies(
@@ -102,6 +99,25 @@ public class Utilities {
         for (Map.Entry<String, String> entry : cookies.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }	
+        try {
+			System.out.println(extractPrice("644."));
+		} catch (ExctractionFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        
+        try {
+			System.out.println(extractGpu(" NVIDIA GeForce RTX 3050"));
+		} catch (ExctractionFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println(extractCpu("i9-14900HX"));
+		} catch (ExctractionFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	

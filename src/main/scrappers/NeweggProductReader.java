@@ -17,7 +17,7 @@ import main.Exceptions.ExctractionFailedException;
 public class NeweggProductReader {
 	private final static String gamingLaptopsURL ="https://www.newegg.com/p/pl?N=100157995%20601360966%20601411482%20601328394%20601333544%204131&d=gaming+laptop&Order=1&isdeptsrh=1&LeftPriceRange=300+700";
 	private static List<String> failedUrls = new ArrayList<>(); 
-    public static List<LaptopData> readProducts(boolean allowRefurbished) throws IOException{
+    public  static List<LaptopData> readProducts(boolean allowRefurbished) throws IOException{
 		List<LaptopData> products = new ArrayList<>();
 		Document doc = Jsoup.connect(gamingLaptopsURL).get();
 		try {
@@ -92,7 +92,7 @@ public class NeweggProductReader {
 					laptop.setGpu(gpu);
 					//System.out.println(gpu + Utilities.debugginString);
 				}else if(tableHeader.equals("cpu")|| tableHeader.equals("cpuname") || tableHeader.contains("proccessor")) {
-					String cpu = Utilities.extractcpu(tableData);
+					String cpu = Utilities.extractCpu(tableData);
 					laptop.setCpu(cpu);
 					//System.out.println(cpu + Utilities.debugginString);
 				}else if(tableHeader.equals("memory") || tableHeader.equals("ram") ) {

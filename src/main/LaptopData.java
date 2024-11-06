@@ -57,7 +57,7 @@ public class LaptopData {
 	public void setGpu(String gpu) {
 		if (gpu==null)return;
 		if (this.gpu!=null)return;
-		this.gpu = gpu;
+		this.gpu = gpu.trim();
 	}
 	public String getCpu() {
 		return cpu;
@@ -65,7 +65,7 @@ public class LaptopData {
 	public void setCpu(String cpu) {
 		if (cpu==null)return;
 		if (this.cpu!=null)return;
-		this.cpu = cpu;
+		this.cpu = cpu.trim();
 	}
 	public int getHdd() {
 		return hdd;
