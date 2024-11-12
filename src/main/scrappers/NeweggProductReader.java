@@ -3,6 +3,7 @@ package main.scrappers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +17,9 @@ import main.Exceptions.ExctractionFailedException;
 
 public class NeweggProductReader {
 	private final static String gamingLaptopsURL ="https://www.newegg.com/p/pl?N=100157995%20601360966%20601411482%20601328394%20601333544%204131&d=gaming+laptop&Order=1&isdeptsrh=1&LeftPriceRange=300+700";
-	private static List<String> failedUrls = new ArrayList<>(); 
+	private static final List<String> failedUrls = new ArrayList<>();
+	private static int pageCtr =1;
+	private static  final Random r = new Random();
     public  static List<LaptopData> readProducts(boolean allowRefurbished) throws IOException{
 		List<LaptopData> products = new ArrayList<>();
 		Document doc = Jsoup.connect(gamingLaptopsURL).get();
@@ -29,16 +32,17 @@ public class NeweggProductReader {
 		readNextPage(gamingLaptopsURL,products,allowRefurbished);
 		return products;
 	}
-    private static int ctr=1;
+
 	private static void readNextPage(String currUrl, List<LaptopData> products,boolean allowRefurbished) throws IOException {
-		System.out.println("reading page " + (ctr++));
-		Document doc = Jsoup.connect(gamingLaptopsURL).get();
+		System.out.println("reading page " + (pageCtr)+"\nurl: "+currUrl);
+		Document doc = Jsoup.connect(currUrl).get();
 		Element nextDiv = doc.select("div.btn-group-cell").last();
-		if (nextDiv==null)
-			System.out.println("script got blocked by website");
+		if (nextDiv==null){
+			System.out.println("script got blocked by website");return;}
 		products.addAll((readPageProducts(currUrl,allowRefurbished)));
-		if (nextDiv.select("a.btn is-disabled").size()!=0)
+		if (nextDiv.selectFirst("a[title=Next].is-disabled")!=null)
 			return;
+		pageCtr++;
 		readNextPage(nextDiv.select("a").first().attr("href"),products,allowRefurbished);
 		
 		
@@ -47,18 +51,32 @@ public class NeweggProductReader {
 		Document doc = Jsoup.connect(url).get();
 		List<LaptopData> products = new ArrayList<>();
 		Elements items = doc.select("div.item-cell");
+		System.out.println("	page has : " + items.size() + " products");
+
 		for (Element item : items) {
-			if (doc.select("span.item-open-box-italic").text().length()!=0)continue;
+			if (!allowRefurbished && item.select("span.item-open-box-italic").text().length()==0)continue;
+			try {
+				int delay = 2000 + r.nextInt(8000);
+				System.out.println("artificial delay before visiting link in page "+pageCtr+" for: " + delay + " ms\n" + Utilities.debugginString);
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				System.out.println("couldn't delay thread");
+				e.printStackTrace();
+			}
 			String itemUrl = item.select("a").first().attr("href");
 			try {
 				LaptopData lapData = getLaptopData(itemUrl);
-				if (lapData.getCpu()!=null && lapData.getGpu()!=null && lapData.getRam()!=0 && lapData.getPrice()!=0)
+				if (lapData.getCpu()!=null && lapData.getGpu()!=null && lapData.getRam()!=0 && lapData.getPrice()!=0){
 					products.add(lapData);
+					System.out.println(lapData);
+				}
 			}catch (Exception e) {
 				System.out.println("couldn't extract item from " + itemUrl);
 				e.printStackTrace();
+				System.out.println(Utilities.debugginString);
 			}
 		}
+		System.out.println("page "+pageCtr+" has been read");
 		return products;
 		
 	}
@@ -115,20 +133,23 @@ public class NeweggProductReader {
 				//exc.printStackTrace();
 			}
 		}
-		System.out.println(laptop);
-		
+		if ( laptop.getGpu()==null || laptop.getRam()==0 || laptop.getPrice()==0 || (laptop.getSsd()+laptop.getHdd()==0)){
+			throw new ExctractionFailedException();
+		}
 		return laptop;
 	}
 	public static void main(String[] args) {
 		try {
-			getLaptopData("https://www.newegg.com/aorus-16-bsf-73us654sh-16-0-intel-core-i7-13700h-16gb-geforce-rtx-4070-1tb-pcie-black/p/N82E16834725221");
+			/*getLaptopData("https://www.newegg.com/aorus-16-bsf-73us654sh-16-0-intel-core-i7-13700h-16gb-geforce-rtx-4070-1tb-pcie-black/p/N82E16834725221");
 			getLaptopData("https://www.newegg.com/p/1TS-000X-05PZ5");
-			getLaptopData("https://www.newegg.com/p/2WC-0009-02SV6?Item=9SIA6V6KBF0591&cm_sp=SP-_-2576436-_-0-_-2-_-9SIA6V6KBF0591-_-gaming laptop-_-gaming|laptop-_-6");
-		
-			/*List<LaptopData> l = readProducts();
+			getLaptopData("https://www.newegg.com/black-asus-tuf-gaming-fx705dt-fx705dt/p/2WC-000N-0EJ63?Item=9SIA5WMKBC7023");
+			getLaptopData("https://www.newegg.com/black-lenovo-ideapad-l340/p/2WC-000J-00S27?Item=9SIA8TKHUG2051");
+			getLaptopData("https://www.newegg.com/black-lenovo-ideapad-l340/p/2WC-000J-00S49?Item=9SIA8TKHUG2056");
+		*/
+			List<LaptopData> l = readProducts(true);
 			System.out.println("successful: " + l.size());
 			System.out.println("failed: " + failedUrls.size());
-			failedUrls.stream().forEach(e->System.out.println(e));*/
+			failedUrls.forEach(System.out::println);
 	
 			} catch (Exception e) {
 			// TODO Auto-generated catcXh block
