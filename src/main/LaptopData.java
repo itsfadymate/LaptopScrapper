@@ -16,6 +16,7 @@ public class LaptopData {
 	private String description="";
 	public String toString() {
 		return "purchase link: " + purchaseLink +
+				"\nname: " + name + 
 				"\ngpu: " +gpu +
 				"\ncpu: " + cpu+
 				"\nhdd: " + hdd+
@@ -25,9 +26,8 @@ public class LaptopData {
 				"\ncurrency: " +c +
 				"\ninStock: " + inStock+
 				"\ninSale: " +inSale +
-				"\nname: " + name + 
 				"\ndescription: " + description+
-				"\n" + Utilities.debugginString;
+				"\n" + Utilities.debugginString +"\n";
 	}	
 	public String getName() {
 		return name;
@@ -39,6 +39,7 @@ public class LaptopData {
 		this.c = c;
 		this.inStock = true;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
