@@ -75,7 +75,10 @@ public class Utilities {
 	    Matcher matcher = pattern.matcher(strNum);
 	    return matcher.matches();
 	}
-
+	public static int levenDistance(String s) {
+		return 0;
+	}
+	
 	public static Map<String,String> extractCookies(String cookieheaders) {
 		String[] cookiePairs = cookieheaders.split(";");
 

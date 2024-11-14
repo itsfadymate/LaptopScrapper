@@ -47,7 +47,7 @@ public class AmazonProductReader {
 		        .get();
 		readPageProducts(gaminglaptopsurl,doc);
 		Element nextButton = doc.selectFirst(".s-pagination-next");
-		if (!nextButton.tagName().equals("a"))return;
+		if (nextButton==null || !nextButton.tagName().equals("a"))return;
 		String nextPageURL = "https://www.amazon.com" +nextButton.attr("href");
 		System.out.println("next page (page: "+(pageCtr+1)+ ") url: " + nextPageURL );
 		pageCtr++;
